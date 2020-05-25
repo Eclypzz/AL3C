@@ -21,8 +21,6 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         primarySwatch: Colors.yellow,
 
-        accentColor: Colors.amber,
-
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
