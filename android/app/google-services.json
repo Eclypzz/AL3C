@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "510293778840",
+    "firebase_url": "https://bring-it-9daaf.firebaseio.com",
+    "project_id": "bring-it-9daaf",
+    "storage_bucket": "bring-it-9daaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510293778840:android:2fe83bb902e535b26c0bed",
+        "android_client_info": {
+          "package_name": "fr.miage.toulouse.bringit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510293778840-qgnsphessfvoo704trtmkc7dugmv3cmh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAby7Y0KBKfongAsPdQFt3MU2a4R8NyygQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510293778840-qgnsphessfvoo704trtmkc7dugmv3cmh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
