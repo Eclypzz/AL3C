@@ -23,8 +23,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+    
+  # http dependencies
   http: ^0.12.1
+  # intl dependencies
+  intl: ^0.16.1
+  # spin loading icons
+  flutter_spinkit: ^4.1.2+1
+  # google font
+  google_fonts: ^1.1.0
+  # provider package
+  provider: ^4.1.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3

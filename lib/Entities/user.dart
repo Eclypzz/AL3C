@@ -1,18 +1,16 @@
 import 'package:bringit/Entities/adress.dart';
+import 'package:bringit/Entities/score.dart';
 
 class User{
-  static int idUser = 0;
-  int id;
+  String id;
   String nom;
   String prenom;
   String tel;
   String email;
   Adress adress;
-  int personalScore;
+  List<Score> personalScores;
 
-  User({ this.nom, this.prenom, this.tel, this.email, this.adress}){
-    User.idUser += 1;
-    this.id = User.idUser;
-    this.personalScore = 0;
+  User({ this.id, this.nom, this.prenom, this.tel, this.email, this.adress}){
+    this.personalScores = List<Score>();
   }
 }

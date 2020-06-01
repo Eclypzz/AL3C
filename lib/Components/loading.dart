@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:bringit/Utils/constants.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -13,10 +14,11 @@ class _LoadingState extends State<Loading> {
   @override
   void initState() {
     super.initState();
-    getData();
+    getData();    
   }
 
-  void getData() async {
+
+  Future<void> getData() async {
     // simulate network request for a username
     // await make every other functions wait until it's finished
     Response res = await get('https://jsonplaceholder.typicode.com/todos/1');
@@ -30,7 +32,7 @@ class _LoadingState extends State<Loading> {
       print("");
     });
 
-    
+    Navigator.pushReplacementNamed(context, '/list_produtcs');
   }
 
   @override
@@ -71,14 +73,16 @@ class _LoadingState extends State<Loading> {
               Text(
                 Constants['loading'],
                 style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.0,
-                letterSpacing: 3.0
-                )
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  letterSpacing: 3.0
+                  )
             ),
             SizedBox(width: 10.0),
-            Icon((Icons.hourglass_empty)
-            )
+            SpinKitWanderingCubes(
+              color: Constants['primary_color'],
+              size: 20.0,
+            ),
           ],
           )
         ],

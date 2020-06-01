@@ -1,0 +1,58 @@
+﻿Catégorie;Produit;Prix;Unite
+Légumes;Poivron Jaune;0.73;pièce
+Légumes;Poivron Rouge;0.83;pièce
+Légumes;Poivron Vert;0.53;pièce
+Légumes;Botte de radis;0.94;pièce
+Légumes;Concombre;1.01;pièce
+Légumes;Salade (Laitue);0.96;pièce
+Légumes;Salade (Batavia);0.96;pièce
+Légumes;Salade (Feuille de chêne);0.96;pièce
+Légumes;Aubergine;0.94;pièce
+Légumes;Tomate ronde;2.73;kg
+Légumes;Courgette;2.43;kg
+Légumes;Endive;0.33;pièce
+Légumes;Carotte;1.33;kg
+Légumes;Brocolis;1.00;pièce
+Légumes;Champignon de Paris (barquette 500g);1.91;pièce
+Légumes;Avocat;1.15;pièce
+Légumes;Artichaut;1.63;pièce
+Légumes;Oignon;1.77;kg
+Légumes;Pommes de terre;1.25;kg
+Fruits;Banane;3.72;kg
+Fruits;Pommes (6);3.85;pièce
+Fruits;Poires;3.53;kg
+Fruits;Nectarine Jaune (500g);2.43;pièce
+Fruits;Melon;2.24;pièce
+Fruits;Fraises (barquette 500g);4.00;pièce
+Fruits;Kiwi;0.41;pièce
+Fruits;Abricot (barquette 500g);2.84;pièce
+Pains;Baguette;0.80€;
+Pains;Pavé aux céréales;0.85€;
+Pains;Pain complet;1.10€;
+Pains;Pain au seigle;1.10€;
+Viennoiserie;Chocolatine;0.32€;
+Viennoiserie;Croissant;0.42€;
+Oeufs;Oeufs (boite de 6);1.70€;
+Oeufs;Oeufs (boite de 12);2.83€;
+Lait;Lait demi-écrémé;0.94€;
+Lait;Lait entier;1.51€;
+Lait;Lait écrémé;1.26€;
+Beurre;Beurre;1.97€;
+Beurre;Beurre doux;2.75€;
+Crème;Crème fraiche;1.60€;
+Crème;Crème légère (3 briques);2.10€;
+Fromages;Babybel (6);1.86€;
+Fromages;Chaussée aux moines;2.39€;
+Fromages;Roquefort;2.24€;
+Fromages;Camembert;1.54€;
+Fromages;Bûche de chèvre;2.64€;
+Fromages;Conté;2.52€;
+Fromages;Emmental;2.03€;
+Fromages;Guyère rapé;2.46€;
+Charcuterie;Saucisse sèche;3.03€;
+Charcuterie;Jambon supérieur (4 tranches);2.24€;
+Charcuterie;Jambon supérieur (6 tranches);2.86€;
+Charcuterie;Jambon cru (6 tranches);3.30€;
+Dessert;Yaourts nature 12;2.22€;
+Dessert;Yaouts aux fruis 8;1.84€;
+Dessert;Compote de pommes 4;1.16€;
