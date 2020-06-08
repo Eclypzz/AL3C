@@ -77,7 +77,7 @@ class UserDatabaseService {
   }
   // 
   Future getUserInApp(FirebaseUser user) async{
-    User userInApp = User(id: user.uid, nom: '', prenom: '', tel: '', adress: null, email: user.email);;
+    User userInApp = User(id: user.uid, nom: '', prenom: '', tel: '', adress: null, email: user.email);
     if(user != null){
       DocumentReference documentReference = Firestore.instance.collection("users").document('${user.uid}');
       Adress adress;

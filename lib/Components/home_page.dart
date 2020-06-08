@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:bringit/Components/Command/your_command.dart';
 import 'package:bringit/Components/drawer.dart';
 import 'package:bringit/Components/google_map.dart';
@@ -12,7 +11,6 @@ import 'package:bringit/Services/partner_database.dart';
 import 'package:bringit/Services/user_database.dart';
 import 'package:bringit/Utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -93,35 +91,6 @@ class _HomeState extends State<Home> {
     ImageConfiguration(devicePixelRatio: 2.5),
     'public/images/blueCarMarker.png');
    }
-   void _setInitPosition(User user, LatLng _center) async {
-     Marker marker = await _getUserMarkers(user);
-     if(marker != null){
-       _center = LatLng(marker.position.latitude, marker.position.longitude);
-       print('center in function ${_center.toString()}');
-     }
-   }
-  // 
-  Future<Marker> _getUserMarkers(User user) async {
-    List<Placemark> userPlacemarks = [];
-    try{
-      userPlacemarks = await Geolocator().placemarkFromAddress("${user.adress.getAdressString()}");
-      print('userplacemarks ${userPlacemarks.toString()}');
-      print('userplacemarks ${userPlacemarks[0].toJson()}');
-      print('userplacemarks ${userPlacemarks[0].position}');
-      return Marker(
-        markerId: MarkerId(user.id),
-        position: LatLng(userPlacemarks[0].position.latitude,userPlacemarks[0].position.longitude),
-        infoWindow: InfoWindow(
-          title: '${user.nom} ${user.prenom}',
-          snippet: 'vous êtes ici'
-        ),
-        icon: pinLocationIcon,
-      );
-    }catch(e){
-      print('ERROR '+e.toString());
-      return null;
-    }
-  }
   // body widget
   Widget _bodyGoogleMap(User user){
     return MultiProvider(

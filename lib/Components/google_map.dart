@@ -78,17 +78,22 @@ class _GoogleHomeState extends State<GoogleHome> {
   }
   //
   Future<Map<String,Marker>> _getCommandsMarkers(List<Command> listCommands, List<Partenaire> listPartners) async {
-    Map<String,Marker> commandsMarkers = Map();
-    for(Command command in listCommands) {
-      Partenaire partner = PartnerDatabaseService().getPartnerFromID(command.idMagasin, listPartners);
-      List<Placemark> partnerPlaceMarks = await Geolocator().placemarkFromAddress("${partner.adress.getAdressString()}");
-      double lat = partnerPlaceMarks[0].position.latitude + (sin(commandsMarkers.length * pi / 6.0) / 200.0);
-      double long = partnerPlaceMarks[0].position.longitude + (cos(commandsMarkers.length * pi / 6.0) / 200.0);
-      commandsMarkers[command.id] = _createMarker(command.id, lat, long, 
-                                        partner.name, '${command.totalEnEuro.toStringAsFixed(2).toString()}€ - ${command.point}point(s)', pinCommandWaitingLocation);
+    try{
+      Map<String,Marker> commandsMarkers = Map();
+      for(Command command in listCommands) {
+        Partenaire partner = PartnerDatabaseService().getPartnerFromID(command.idMagasin, listPartners);
+        List<Placemark> partnerPlaceMarks = await Geolocator().placemarkFromAddress("${partner.adress.getAdressString()}");
+        double lat = partnerPlaceMarks[0].position.latitude + (sin(commandsMarkers.length * pi / 6.0) / 200.0);
+        double long = partnerPlaceMarks[0].position.longitude + (cos(commandsMarkers.length * pi / 6.0) / 200.0);
+        commandsMarkers[command.id] = _createMarker(command.id, lat, long, 
+                                          partner.name, '${command.totalEnEuro.toStringAsFixed(2).toString()}€ - ${command.point}point(s)', pinCommandWaitingLocation);
+      }
+      print('commandmarker length ${commandsMarkers.length}');
+      return commandsMarkers;
+    }catch(e) {
+      print(e.toString());
+      return null;
     }
-    print('commands markers length ${commandsMarkers.length}');
-    return commandsMarkers;
   }
   List<Command> getUnfinishedCommandsOfOthers(String userID, List<Command> allCommands){
     List<Command> unfinishedCommandsOfOthers = CommandDatabaseService().getUnfinishedCommands(listCommands);
@@ -108,7 +113,6 @@ class _GoogleHomeState extends State<GoogleHome> {
       commandMarkers.forEach((key, value) {
         _markers[key] = value;
       });
-      print('markers length ${_markers.length}');
     });
   }
   @override
