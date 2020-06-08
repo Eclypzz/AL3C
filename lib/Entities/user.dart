@@ -1,5 +1,4 @@
 import 'package:bringit/Entities/adress.dart';
-import 'package:bringit/Entities/score.dart';
 
 class User{
   String id;
@@ -8,9 +7,17 @@ class User{
   String tel;
   String email;
   Adress adress;
-  List<Score> personalScores;
+  double personalScores;
 
-  User({ this.id, this.nom, this.prenom, this.tel, this.email, this.adress}){
-    this.personalScores = List<Score>();
+  User({ this.id, this.nom, this.prenom, this.tel, this.email, this.adress, this.personalScores}){
+    this.personalScores = this.personalScores ?? 0.0;
+  }
+
+  void setDetails({String nom, String prenom, String tel, Adress adress, double score}){
+    this.nom = nom;
+    this.prenom = prenom;
+    this.tel = tel;
+    this.adress = adress;
+    this.personalScores = score;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:bringit/Components/loading_simple.dart';
+import 'package:bringit/Entities/adress.dart';
 import 'package:bringit/Services/auth.dart';
 import 'package:bringit/Utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +111,7 @@ class _RegisterState extends State<Register> {
         ],
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: Form(
@@ -126,7 +128,8 @@ class _RegisterState extends State<Register> {
                       setState(() {
                         loading = true;
                       });
-                      dynamic result = await _auth.registerWithEmailandPassword(email, password);
+                      dynamic result = await _auth.registerWithEmailandPassword(email, password, nom, prenom, tel, 
+                                                  Adress(num: numStreet, voie: street, ville: city, codePostal: int.parse(postalCode)));
                       if(result == null){
                         setState(() {
                           error = 'veify your input';

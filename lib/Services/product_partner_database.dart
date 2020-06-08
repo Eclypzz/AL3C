@@ -1,16 +1,16 @@
 import 'package:bringit/Entities/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProductDatabaseService {
+class ProductPartnerDatabaseService {
 
   //final String uid;
 
   final String documentID;
   CollectionReference productCollection;
 
-  ProductDatabaseService({ this.documentID }){
-    //productCollection = Firestore.instance.collection('partners').document(documentID).collection('products');
-    productCollection = Firestore.instance.collection('products');
+  ProductPartnerDatabaseService({ this.documentID }){
+    productCollection = Firestore.instance.collection('partners').document(documentID).collection('products');
+    //productCollection = Firestore.instance.collection('products');
 
   }
 

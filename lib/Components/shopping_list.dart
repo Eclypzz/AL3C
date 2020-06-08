@@ -10,12 +10,7 @@ class ShoppingList extends StatefulWidget {
 class _ShoppingListState extends State<ShoppingList> {
 
   List<Product> listProduct = [
-    Product(name: "Pain au chocolat", price: 25.0),
-    Product(name: "Pain au raisin", price: 35.0),
-    Product(name: "Crème fraiche", price: 45.0),
-    Product(name: "Lait de la vache", price: 55.0),
-    Product(name: "Pain au rhum", price: 65.0),
-    Product(name: "Pain baguette", price: 5.0),
+    
   ];
   @override
   void initState() {
@@ -75,7 +70,7 @@ class _ShoppingListState extends State<ShoppingList> {
                           flex: 5,
                           child: ListTile(
                             onTap: () {},
-                            title: Text(listProduct[index].name),
+                            title: Text(''),
                             leading: Icon(
                               Icons.shopping_basket,
                               color: Constants['primary_color'],

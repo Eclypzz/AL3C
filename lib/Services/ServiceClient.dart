@@ -1,19 +1,18 @@
 
 import 'package:bringit/Entities/command.dart';
-import 'package:bringit/Entities/user.dart';
 import 'package:bringit/Utils/constants.dart';
 
 class ServiceClient {
 
   ServiceClient ();
 
-  void accepterLaCommande(User repondeur, Command command){
-    command.setRepondeur(repondeur);
-    command.setStatut(StatusCommand.EN_COURS);
+  void accepterLaCommande(String idRepondeur, Command command){
+    command.setRepondeur(idRepondeur);
+    command.setStatut(StatusCommand[1]);
   }
 
   void finishCommand(Command command){
-    command.setStatut(StatusCommand.FINI);
+    command.setStatut(StatusCommand[2]);
   }
   
 }

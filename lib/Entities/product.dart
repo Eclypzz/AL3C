@@ -1,8 +1,9 @@
 class Product {
-  String name;
-  double price;
+  String nom;
+  double prix;
   String category;
   String unite;
+  String id;
 
-  Product({ this.name, this.price, this.unite, this.category });
+  Product({ this.id, this.nom, this.prix, this.unite, this.category });
 }

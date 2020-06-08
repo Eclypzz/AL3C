@@ -1,86 +1,146 @@
+import 'dart:convert';
+import 'package:bringit/Components/Command/your_command.dart';
+import 'package:bringit/Components/drawer.dart';
+import 'package:bringit/Components/google_map.dart';
 import 'package:bringit/Components/loading_simple.dart';
-import 'package:bringit/Entities/adress.dart';
+import 'package:bringit/Entities/command.dart';
+import 'package:bringit/Entities/partenaire.dart';
 import 'package:bringit/Entities/user.dart';
 import 'package:bringit/Services/auth.dart';
+import 'package:bringit/Services/command_database.dart';
+import 'package:bringit/Services/partner_database.dart';
 import 'package:bringit/Services/user_database.dart';
-import 'package:flutter/material.dart';
 import 'package:bringit/Utils/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
+  final User user;
+  Home({ this.user });
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
 
-  List<User> users = [
-    User(id: '1zeinwkoHLV1VUGeQrGn4okkRw42', prenom:'Maxime', nom: 'BERTROU-RIVOT', email: 'maxime.bertrou-rivot@bringit.fr', tel: '0005550005', adress: Adress(num: '111', voie: 'holy', codePostal: 31000, ville: 'Toulouse')),
-    User(id: 'zYOvGn7qfpVUOgR5UuymfVuqpoo2', prenom:'Duc Trong', nom: 'VO', email: 'duc-trong.vo@bringit.fr', tel: '0005550005', adress: Adress(num: '111', voie: 'holy', codePostal: 31000, ville: 'Toulouse')),
-    User(id: '7EELRlt2xsZwtRXa6pcE0w8PKuQ2', prenom:'Carlos', nom: 'FONG-LOPEZ', email: 'calors.fong-lopez@bringit.fr', tel: '0005550005', adress: Adress(num: '111', voie: 'holy', codePostal: 31000, ville: 'Toulouse')),
-    User(id: 'DqsyN6bZVxf0xURMFv6G2IIzxYm1', prenom:'Jeremy', nom: 'CANTON', email: 'jeremy.canton@bringit.fr', tel: '0005550005', adress: Adress(num: '111', voie: 'holy', codePostal: 31000, ville: 'Toulouse')),
-    User(id: 'pCCNGUtD31TNPzcfJJTdWglbAfx2', prenom:'Samir', nom: 'BOUAHRIRA', email: 'samir.bouahrira@bringit.fr', tel: '0005550005', adress: Adress(num: '111', voie: 'holy', codePostal: 31000, ville: 'Toulouse')),
-    //User(id: '', prenom:'Roman', nom: 'MICHONSKA', email: 'roman.michonska@bringit.fr', adress: Adress(num: '111', voie: 'holy', codePostal: 31000, ville: 'Toulouse')),
-  ];
-
   bool loading = false;
   int number = 0;
   final AuthService _auth = AuthService();
+  BitmapDescriptor pinLocationIcon;
   
   @override
-  Widget build(BuildContext context) {
-    return loading ? LoadingSimple() : Scaffold(
-    //image: Image.asset('public/images/bringit_logo.png'),
-    appBar: PreferredSize(
-      preferredSize: Size.fromHeight(60.0),
-      child: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          //crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Text(""),
-            ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                //margin: EdgeInsets.all(20.0),
-                padding: EdgeInsets.fromLTRB(10.0, 10.0, 60.0, 0.0),
-                child: Image.asset('public/images/bringit_logo.png'),
-                //alignment: Alignment.centerLeft,
-              ),
-            ),
-            //Expanded( 
-              // flex: 1,
-              // child: Container(
-              //   child: Text(""),
-              //   // IconButton(
-              //   //   icon: Icon(Icons.search), 
-              //   //   onPressed: () {
-              //   //     print(Constants['search']);
-              //   //     Navigator.pushNamed(context, '/');
-              //   //   }
-              //   // ),
-              //   alignment: Alignment.centerRight,
-              // ),
-              //),
-            ],
-          ),
-        centerTitle: true,
-        backgroundColor: Colors.greenAccent[400],
-        elevation: 0.0,
-        actions: <Widget>[
-          FlatButton.icon(
-            onPressed: () async {
-              await _auth.signOut();
-            }, 
-            icon: Icon(Icons.person), 
-            label: Text('Log out'),
-          )
-        ],
-      ),
+  void initState() {
+    super.initState();
+    setCustomMapPin();
+    //_setInitPosition(widget.user);
+  }
+  // google map implementation
+  bool mapView = true;
+  GoogleMapController mapController;
+  
+  // app bar widget
+  Widget _appBar(){
+    return AppBar(
+      leading: Builder(
+      builder: (BuildContext context) {
+        return 
+            IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.person),
+              iconSize: 30.0,
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+      },
     ),
-    body: Padding(
+     title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 15.0),
+              child: Image.asset('public/images/bringit_logo.png'),
+            ),
+          ),
+          ],
+        ),
+      centerTitle: true,
+      backgroundColor: Colors.greenAccent[400],
+      elevation: 0.0,
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () async {
+            await _auth.signOut();
+          }, 
+          child: Text(Constants['log_out']),
+        )
+      ],
+    );
+  }
+  
+  // drawer widget
+  Widget _drawer(){
+    return SideMenu();
+  }
+
+  // marker image
+  void setCustomMapPin() async {
+    pinLocationIcon = await BitmapDescriptor.fromAssetImage(
+    ImageConfiguration(devicePixelRatio: 2.5),
+    'public/images/blueCarMarker.png');
+   }
+   void _setInitPosition(User user, LatLng _center) async {
+     Marker marker = await _getUserMarkers(user);
+     if(marker != null){
+       _center = LatLng(marker.position.latitude, marker.position.longitude);
+       print('center in function ${_center.toString()}');
+     }
+   }
+  // 
+  Future<Marker> _getUserMarkers(User user) async {
+    List<Placemark> userPlacemarks = [];
+    try{
+      userPlacemarks = await Geolocator().placemarkFromAddress("${user.adress.getAdressString()}");
+      print('userplacemarks ${userPlacemarks.toString()}');
+      print('userplacemarks ${userPlacemarks[0].toJson()}');
+      print('userplacemarks ${userPlacemarks[0].position}');
+      return Marker(
+        markerId: MarkerId(user.id),
+        position: LatLng(userPlacemarks[0].position.latitude,userPlacemarks[0].position.longitude),
+        infoWindow: InfoWindow(
+          title: '${user.nom} ${user.prenom}',
+          snippet: 'vous êtes ici'
+        ),
+        icon: pinLocationIcon,
+      );
+    }catch(e){
+      print('ERROR '+e.toString());
+      return null;
+    }
+  }
+  // body widget
+  Widget _bodyGoogleMap(User user){
+    return MultiProvider(
+      providers: [
+        StreamProvider<List<Partenaire>>.value(value: PartnerDatabaseService().partnersFromStream),
+        StreamProvider<List<Command>>.value(value: CommandDatabaseService().getCommandStream),
+        StreamProvider<List<User>>.value(value: UserDatabaseService().getUserStream)
+      ],
+      child: GoogleHome(user: user),
+    );
+  }
+
+  Widget _bodyCommandsList(){
+    return YourCommand(idUser: widget.user.id,);
+  }
+
+  // readCSV
+  Widget _readCSV(User user){
+    return Padding(
       padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -113,25 +173,54 @@ class _HomeState extends State<Home> {
           ),
           SizedBox(width: 20.0),
           FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                //number += 1;
-                //create new user documents in db
-                users.map((user) async => {
-                  loading = true,
-                  await UserDatabaseService(uid: user.id).updateUserData(nom: user.nom, prenom: user.prenom, tel: user.tel, adress: user.adress),
-                  print('create user ${user.nom} ${user.prenom}'),
-                  loading = false,
-                });
-              });
+            onPressed: () async {
+
+              //UserDatabaseService().findUserWithEmailFromStore(user.id);
+              // add product to partner
+              // String jsCode = await rootBundle.loadString('public/bd/creastyle.csv');
+              // List<String> linePro;
+              // int docNum = 81;
+              // LineSplitter.split(jsCode).map((line) async => {
+              //   linePro = line.split(','),
+              //   //linePro[2].replaceAll('.', ','),
+              //   _auth.createProducts(docNum.toString(), linePro[0], linePro[1], double.parse(linePro[2]), ''),
+              //   //_auth.createProductForPartner(docNum.toString(), '04', linePro[0], linePro[1], double.parse(linePro[2]), ''),
+              //   docNum += 1
+              // }).toList();
             },
             child: Icon(Icons.add),
             backgroundColor: Colors.green[600],
       ),
         ],
       ),
-  ),
-  
   );
+  }
+
+  // HOME WIDGET
+  @override
+  Widget build(BuildContext context) {
+    User user = widget.user;
+
+    return loading ? LoadingSimple() : StreamProvider<List<User>>.value(
+      value: UserDatabaseService(uid: user.id).getUserStream,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child:_appBar(),
+        ),
+        body: mapView ? _bodyGoogleMap(user) : _bodyCommandsList(),
+        //body: _readCSV(user),
+        drawer: _drawer(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              mapView = !mapView;
+            });
+          },
+          child: Icon(Icons.swap_horizontal_circle),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, //
+  ),
+    );
   }
 }

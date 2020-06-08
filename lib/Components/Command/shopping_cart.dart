@@ -1,5 +1,7 @@
+import 'package:bringit/Entities/command.dart';
+import 'package:bringit/Services/command_database.dart';
 import 'package:flutter/material.dart';
-import 'package:bringit/Entities/product.dart';
+import 'package:provider/provider.dart';
 
 class ShoppingCart extends StatefulWidget {
   @override
@@ -7,23 +9,24 @@ class ShoppingCart extends StatefulWidget {
 }
 
 class _ShoppingCartState extends State<ShoppingCart> {
-
+  Map arguments;
+  List<Command> listCommands;
+  int numberOfCommands;
   @override
   void initState() {
     super.initState();
   }
 
-  List<Product> cartList = [
-    Product(name: "this and that", price: 25.0),
-    Product(name: "this and that", price: 25.0),
-  ];
-
+  bool _showNumber(){
+    return ( numberOfCommands > 0 );
+  }
   @override
   Widget build(BuildContext context) {
+    listCommands = Provider.of<List<Command>>(context);
+    arguments = ModalRoute.of(context).settings.arguments;
+    numberOfCommands = CommandDatabaseService().getUserCommandsFromID(arguments['idUser'], listCommands).length;
+
     return 
-    // Container(
-    //   alignment: Alignment.topCenter,
-      //child: GestureDetector(
       GestureDetector(
         child: Stack(
           alignment: Alignment.topCenter,
@@ -32,7 +35,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
               Icons.shopping_cart,
               size: 36.0,
             ),
-            if (cartList.length > 0)
+            if (_showNumber())
               Padding(
                 padding: const EdgeInsets.only(left: 2.0),
                 child: CircleAvatar(
@@ -40,7 +43,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                   child: Text(
-                    cartList.length.toString(),
+                    numberOfCommands.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12.0,
@@ -51,7 +54,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
           ],
         ),
         onTap: () {
-          print("click basket");
+          Navigator.pushReplacementNamed(context, '/your_command', 
+          arguments: {
+            'idUser': arguments['idUser']
+          });
         },
      // ),
     );
