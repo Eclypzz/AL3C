@@ -15,8 +15,8 @@ import 'package:provider/provider.dart';
 class ListCommand extends StatefulWidget {
   final String idUser;
   final String defautlChoice;
-
-  ListCommand({ this.defautlChoice, this.idUser });
+  final List<Command> defautCommand;
+  ListCommand({ this.defautlChoice, this.idUser, this.defautCommand });
   @override
   _ListCommandState createState() => _ListCommandState();
 }
@@ -28,6 +28,8 @@ class _ListCommandState extends State<ListCommand> {
   List<Partenaire> listPartners;
   //List<Command> currentListCommands;
   List<Command> unfinishedListCommands;
+  List<Command> listShopCommands;
+  Map<String,String> listPartnersNamesIDs = Map();
   String currentDemandeur;
   String idUser;
   Map arguments;
@@ -46,25 +48,39 @@ class _ListCommandState extends State<ListCommand> {
   @override
   Widget build(BuildContext context) {
   
-  listCommands = Provider.of<List<Command>>(context);
+  // stream
   listPartners = Provider.of<List<Partenaire>>(context);
+  listCommands = Provider.of<List<Command>>(context);
   arguments = ModalRoute.of(context).settings.arguments;
+  // local
   List<String> listPartnersNames = listPartners.map((partner) => partner.name).toList();
+  //Map<String,String> listPartnersNamesIDs = Map();
+  listPartners.map((partner) => listPartnersNamesIDs[partner.name] = partner.id).toList();
   idUser = widget.idUser ?? arguments['idUser'];
   listUserCommands = CommandDatabaseService().getUserCommandsFromID(idUser, listCommands);
   unfinishedListCommands = CommandDatabaseService().getUnfinishedCommands(listCommands);
-
+  // get command of magasin
+  List<Command> _getShopCommands(String idShop, List<Command> allCommands){
+    List<Command> shopCommands = [];
+    for(Command command in allCommands){
+      if(command.idMagasin == idShop){
+        shopCommands.add(command);
+      }
+    }
+    return shopCommands;
+  }
+  //listShopCommands = _getShopCommands(listPartnersNamesIDs[widget.defautlChoice], listCommands);
   // show list or none
   Widget _showHeader(){
-    return unfinishedListCommands.length == 0 ?
+    return widget.defautCommand != null ?
       Padding(
         padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 3.0),
         child: Card(
           child: ListTile(
             onTap: () {},
-            title: Text("Aucun commande encours"),
+            title: Text("Vous avvez l'intérêt avec la commande", style: TextStyle(color: Constants['primary_color'], fontWeight: FontWeight.bold)),
             leading: Icon(
-              Icons.sentiment_dissatisfied,
+              Icons.sentiment_very_satisfied,
               color: Constants['primary_color'],
             ),
           ),
@@ -82,11 +98,13 @@ class _ListCommandState extends State<ListCommand> {
         onChanged: (String value) {
           setState(() {
             currentDemandeur = value;
+            if (listPartnersNames.contains(value)) {
+              listShopCommands = _getShopCommands(listPartnersNamesIDs[value], unfinishedListCommands);
+            }
           });
         }
       );
     }
-    
     return loading ? LoadingSimple() : Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -119,10 +137,18 @@ class _ListCommandState extends State<ListCommand> {
               StreamProvider<List<User>>.value(value: UserDatabaseService().getUserStream),
               StreamProvider<List<Partenaire>>.value(value: PartnerDatabaseService().partnersFromStream)
             ],
-            child:currentDemandeur ==  Constants['your_command'] ?
+            child: widget.defautCommand != null ?
+              CommandDetails(currentListCommands: widget.defautCommand, idUser: idUser)
+              :
+            currentDemandeur ==  Constants['your_command'] ?
               CommandDetails(currentListCommands: listUserCommands, idUser: idUser)
               :
-              CommandDetails(currentListCommands: unfinishedListCommands, idUser: idUser),
+            // currentDemandeur ==  Constants['all_commands'] ?
+            //   CommandDetails(currentListCommands: unfinishedListCommands, idUser: idUser)
+            listPartnersNames.contains(currentDemandeur) ?
+              CommandDetails(currentListCommands: listShopCommands, idUser: idUser)
+              :
+              CommandDetails(currentListCommands: unfinishedListCommands, idUser: idUser)
             )
         ]
       ),

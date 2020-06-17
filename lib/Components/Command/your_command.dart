@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 
 class YourCommand extends StatefulWidget {
   final String idUser;
-  YourCommand({ this.idUser });
+  final String defaultChoice;
+  final List<Command> defautCommand;
+  YourCommand({ this.idUser, this.defaultChoice, this.defautCommand });
   @override
   _YourCommandState createState() => _YourCommandState();
 }
@@ -28,7 +30,7 @@ class _YourCommandState extends State<YourCommand> {
         StreamProvider<List<Partenaire>>.value(value: PartnerDatabaseService().partnersFromStream),
         StreamProvider<List<Command>>.value(value: CommandDatabaseService().getCommandStream)
       ],
-      child: ListCommand(defautlChoice: Constants['your_command'], idUser: idUser),
+      child: ListCommand(defautlChoice: widget.defaultChoice ?? Constants['your_command'], idUser: idUser, defautCommand: widget.defautCommand,),
     );
   }
 }

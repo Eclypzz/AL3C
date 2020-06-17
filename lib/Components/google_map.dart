@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:bringit/Components/Command/your_command.dart';
 import 'package:bringit/Entities/command.dart';
 import 'package:bringit/Entities/partenaire.dart';
 import 'package:bringit/Entities/user.dart';
@@ -9,7 +10,7 @@ import 'package:bringit/Services/user_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
+//import 'package:geolocator/geolocator.dart';
 
 class GoogleHome extends StatefulWidget {
   final User user;
@@ -30,11 +31,17 @@ class _GoogleHomeState extends State<GoogleHome> {
   GoogleMapController mapController;
   Completer<GoogleMapController> _controller = Completer();
   final Map<String, Marker> _markers = {};
+  bool showCommandDetails;
+  String chosenPartner;
+  List<Command> defautCommand;
 
   @override
   void initState() {
     super.initState();
     setCustomMapPin();
+    showCommandDetails = false;
+    chosenPartner = null;
+    defautCommand = [];
   }
   // marker image
   void setCustomMapPin() async {
@@ -52,25 +59,36 @@ class _GoogleHomeState extends State<GoogleHome> {
     'public/images/blueCarMarker.png');
    }
   // create a marker
-  Marker _createMarker(String id, double lat, double long, String title, String snippet, BitmapDescriptor pinLocationIcon) {
+  Marker _createMarker(String id, double lat, double long, String title, String snippet, BitmapDescriptor pinLocationIcon, Command command) {
     return Marker(
       markerId: MarkerId(id),
       position: LatLng(lat, long),
       infoWindow: InfoWindow(
         title: title,
         snippet: snippet,
+        onTap: () {
+          //Navigator.pushNamed(context, '/your_command', arguments: {'idUser': widget.user.id});
+          setState(() {
+            showCommandDetails = true;
+            chosenPartner = title;
+            defautCommand.clear();
+            defautCommand.add(command);
+            print('chosenpartner $chosenPartner');
+          });
+      }
       ),
       icon: pinLocationIcon ?? BitmapDescriptor.defaultMarker,
-      onTap: () {print('tap tap');}
     );
   }
   // 
   Future<Marker> _getUserMarkers() async {
-    List<Placemark> userPlacemarks = [];
+    //List<Placemark> userPlacemarks = [];
     try{
-      userPlacemarks = await Geolocator().placemarkFromAddress("${widget.user.adress.getAdressString()}");
-      return _createMarker(widget.user.id, userPlacemarks[0].position.latitude, userPlacemarks[0].position.longitude, 
-                          widget.user.nom, 'Vous êtes ici', pinUserLocation);
+      //userPlacemarks = await Geolocator().placemarkFromAddress("${widget.user.adress.getAdressString()}");
+      // return _createMarker(widget.user.id, userPlacemarks[0].position.latitude, userPlacemarks[0].position.longitude, 
+      //                     widget.user.nom, 'Vous êtes ici', pinUserLocation);
+      return _createMarker(widget.user.id, widget.user.adress.latitude, widget.user.adress.longitude, 
+                          widget.user.nom, 'Vous êtes ici', pinUserLocation, null);
     }catch(e){
       print('ERROR '+e.toString());
       return null;
@@ -82,11 +100,14 @@ class _GoogleHomeState extends State<GoogleHome> {
       Map<String,Marker> commandsMarkers = Map();
       for(Command command in listCommands) {
         Partenaire partner = PartnerDatabaseService().getPartnerFromID(command.idMagasin, listPartners);
-        List<Placemark> partnerPlaceMarks = await Geolocator().placemarkFromAddress("${partner.adress.getAdressString()}");
-        double lat = partnerPlaceMarks[0].position.latitude + (sin(commandsMarkers.length * pi / 6.0) / 200.0);
-        double long = partnerPlaceMarks[0].position.longitude + (cos(commandsMarkers.length * pi / 6.0) / 200.0);
+        //List<Placemark> partnerPlaceMarks = await Geolocator().placemarkFromAddress("${partner.adress.getAdressString()}");
+        //double lat = partnerPlaceMarks[0].position.latitude + (sin(commandsMarkers.length * pi / 6.0) / 200.0);
+        double lat = partner.adress.latitude + (sin(commandsMarkers.length * pi / 6.0) / 180.0);
+        //double long = partnerPlaceMarks[0].position.longitude + (cos(commandsMarkers.length * pi / 6.0) / 200.0);
+        double long = partner.adress.longitude + (cos(commandsMarkers.length * pi / 6.0) / 180.0);
         commandsMarkers[command.id] = _createMarker(command.id, lat, long, 
-                                          partner.name, '${command.totalEnEuro.toStringAsFixed(2).toString()}€ - ${command.point}point(s)', pinCommandWaitingLocation);
+                                          partner.name, '${command.totalEnEuro.toStringAsFixed(2).toString()}€ - ${command.point}point(s)',
+                                          pinCommandWaitingLocation, command);
       }
       print('commandmarker length ${commandsMarkers.length}');
       return commandsMarkers;
@@ -132,17 +153,16 @@ class _GoogleHomeState extends State<GoogleHome> {
     // _getPlaceMarkers(_markers);
     // Future.delayed(Duration(seconds: 3), () {});
 
-    return Stack(
-      children: <Widget>[
-        GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _userInitPosition,
-            zoom: 15.0,
-          ),
-          markers: _markers.values.toSet(),
+    return showCommandDetails ?
+      YourCommand(idUser: widget.user.id, defaultChoice: chosenPartner, defautCommand: defautCommand)
+      :
+      GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _userInitPosition,
+          zoom: 15.0,
         ),
-      ]
-    );
+        markers: _markers.values.toSet(),
+      );
   }
 }

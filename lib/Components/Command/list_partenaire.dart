@@ -63,7 +63,8 @@ class _ListPartenaireState extends State<ListPartenaire> {
                                                                         'idPartner': listePartenaires[index].id.toString(),
                                                                         'partnerPic': listePartenaires[index].pic,
                                                                         'partner': listePartenaires[index].name,
-                                                                        'idUser': arguments['idUser']
+                                                                        'idUser': arguments['idUser'],
+                                                                        'partnerUrl': listePartenaires[index].url
                                                                         });
                       },
                       title: Text(listePartenaires[index].name, style: TextStyle(color: Constants['primary_color'], fontWeight: FontWeight.bold, fontSize: 16.0),),

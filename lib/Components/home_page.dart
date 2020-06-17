@@ -68,6 +68,7 @@ class _HomeState extends State<Home> {
         ),
       centerTitle: true,
       backgroundColor: Colors.greenAccent[400],
+      //backgroundColor: Constants['primary_color'],
       elevation: 0.0,
       actions: <Widget>[
         FlatButton(
@@ -104,7 +105,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget _bodyCommandsList(){
-    return YourCommand(idUser: widget.user.id,);
+    return YourCommand(idUser: widget.user.id,defaultChoice: Constants['your_command'],);
   }
 
   // readCSV
@@ -187,6 +188,7 @@ class _HomeState extends State<Home> {
             });
           },
           child: Icon(Icons.swap_horizontal_circle),
+          backgroundColor: Constants['primary_color'],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, //
   ),

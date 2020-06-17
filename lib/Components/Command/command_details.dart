@@ -23,7 +23,6 @@ class _CommandDetailsState extends State<CommandDetails> {
   List<User> listUsers;
   String currentDemandeur;
   Map arguments;
-  bool loading;
   String idUser;
   AuthService _auth = AuthService();
 
@@ -31,7 +30,6 @@ class _CommandDetailsState extends State<CommandDetails> {
   void initState() {
     super.initState();
     listPartners = [Partenaire(id: '',name: '', idProducts: [''], products: [Product()])];
-    loading = false;
   }
   // get current user
   User _getCurrentUser(String idUser, List<User> listUsers){
@@ -107,6 +105,10 @@ class _CommandDetailsState extends State<CommandDetails> {
         ),
         FlatButton(
           onPressed: () async {
+            // cannot interfere with others commands encours
+            if(command.idDemandeur != idUser && command.idRepondeur != idUser && command.idRepondeur != ''){
+              return null;
+            }
             // cannot accept owned command
             if(command.status == StatusCommand[0] && command.idDemandeur == idUser){
               return null;
@@ -119,15 +121,19 @@ class _CommandDetailsState extends State<CommandDetails> {
               String currentStat = command.status;
               dynamic result = await _auth.updateCommandStatus(command, currentStat == StatusCommand[0] ? StatusCommand[1] : StatusCommand[2], idUser);
               if(result != null){
-                currentStat == StatusCommand[0] ? command.setStatut(StatusCommand[1]) : command.setStatut(StatusCommand[2]);
+                setState(() {
+                  currentStat == StatusCommand[0] ? command.setStatut(StatusCommand[1]) : command.setStatut(StatusCommand[2]);
+                  if (currentStat == StatusCommand[0]){command.idRepondeur = idUser;}
+                });
                 // command finished, add point to user 
                 if (currentStat == StatusCommand[1]){
                   User userGetPoint = _getCurrentUser(command.idRepondeur, listUsers);
                   double newPoint = command.point+userGetPoint.personalScores;
-                  print('user to update ${userGetPoint.nom}');
-                  print('new point ${newPoint.toString()}');
                   dynamic res = await _auth.updateUserPoint(userGetPoint, newPoint);
                   if(res == null){
+                    setState(() {
+                      command.status = StatusCommand[2];
+                    });
                     print('Impossible de mise à jour le point');
                   }
                 } 
@@ -137,6 +143,7 @@ class _CommandDetailsState extends State<CommandDetails> {
             }
            },
           child: Text(
+            (command.idDemandeur != idUser && command.idRepondeur != idUser && command.idRepondeur != '') ? '' :
             command.status == StatusCommand[0] ? 
             command.idDemandeur == idUser ? '' : Constants['accept_command'] // cannot accept own command
             : command.idRepondeur == idUser ? '' : Constants['finish_command'], // service provider cannot click finish command
@@ -197,8 +204,8 @@ class _CommandDetailsState extends State<CommandDetails> {
   @override
   Widget build(BuildContext context) {
 
-    listUsers = Provider.of<List<User>>(context);
     listPartners = Provider.of<List<Partenaire>>(context);
+    listUsers = Provider.of<List<User>>(context);
     listProducts = Provider.of<List<Product>>(context);
     arguments = ModalRoute.of(context).settings.arguments;
     idUser = widget.idUser ?? arguments['idUser'];

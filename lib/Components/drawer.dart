@@ -21,7 +21,7 @@ class _SideMenuState extends State<SideMenu> {
   final user = Provider.of<User>(context);
 
   found = UserDatabaseService().findUserWithIdFromList(user.id, usersInfo);
-  user.setDetails(nom: found.nom, prenom: found.prenom, adress: found.adress, tel: found.tel, score: found.personalScores);
+  user.setDetails(nom: found.nom, prenom: found.prenom, adress: found.adress, tel: found.tel, score: found.personalScores, pic: found.pic);
 
     // drawer user info line
   Widget _userInfoLine(String title, String content, Icon icon){
@@ -107,6 +107,10 @@ class _SideMenuState extends State<SideMenu> {
         _userInfoLine('TELEPHONE', user.tel, Icon(Icons.phone_iphone)),
         _userInfoLine('ADRESSE', '${user.adress.num} ${user.adress.voie} - ${user.adress.codePostal} ${user.adress.ville}', Icon(Icons.home)),
         Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Constants['primary_color'], width: 2.0),
+            borderRadius: BorderRadius.circular(4.0)
+          ),
           child: FlatButton(
             onPressed: () { 
               Navigator.pushNamed(context, '/create_command', arguments: {'idUser': user.id});
@@ -117,11 +121,15 @@ class _SideMenuState extends State<SideMenu> {
                 style: TextStyle(color: Constants['primary_color'], fontSize: 12.0),
                 textAlign: TextAlign.left,
               ),
-              trailing: Icon(Icons.shopping_cart)
+              trailing: Icon(Icons.shopping_cart, color: Constants['primary_color'])
             ),
           ),
         ),
         Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Constants['primary_color'], width: 2.0),
+            borderRadius: BorderRadius.circular(4.0)
+          ),
           child: FlatButton(
             onPressed: () { 
               Navigator.pushNamed(context, '/your_command', arguments: {'idUser': user.id});
@@ -132,7 +140,7 @@ class _SideMenuState extends State<SideMenu> {
                 style: TextStyle(color: Constants['primary_color'], fontSize: 12.0),
                 textAlign: TextAlign.left,
               ),
-              trailing: Icon(Icons.description)
+              trailing: Icon(Icons.description, color: Constants['primary_color'])
             ),
           ),
         )

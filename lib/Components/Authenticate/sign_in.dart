@@ -70,7 +70,7 @@ class _SignInState extends State<SignIn> {
     return Column(
       children: <Widget>[
         _entryField("Votre Email"),
-        _entryField("Votre mot de pass", isPassword: true),
+        _entryField("Votre mot de passe", isPassword: true),
       ],
     );
   }
@@ -83,7 +83,7 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Constants['primary_color'],
         elevation: 0.0,
         title: Text(
-          'SIGN IN TO BRING IT',
+          'CONNEXION A BRING IT',
         ),
         actions: <Widget>[
           FlatButton.icon(
@@ -95,7 +95,7 @@ class _SignInState extends State<SignIn> {
               color: Colors.white,
             ), 
             label: Text(
-              "Register",
+              "S'ENREGISTRER",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12.0
@@ -134,7 +134,7 @@ class _SignInState extends State<SignIn> {
                     }
                   },
                   child: Text(
-                    "Sign in",
+                    "Se Connecter",
                     style: TextStyle(
                       color: Colors.white,
                     )

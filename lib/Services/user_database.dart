@@ -67,7 +67,8 @@ class UserDatabaseService {
             latitude: doc.data['adress']['latitude'] ?? null,
             longitude: doc.data['adress']['longitude'] ?? null
           ),
-          personalScores: doc.data['score'].toDouble() ?? 0.0
+          personalScores: doc.data['score'].toDouble() ?? 0.0,
+          pic: doc.data['pic'] ?? ''
         );
       }).toList();
     }catch(e) {

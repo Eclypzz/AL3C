@@ -42,6 +42,7 @@ class PartnerDatabaseService {
         products: null,
         idProducts: doc.data['idProducts'] != null ? doc.data['idProducts'].split(';') : [],
         pic: doc.data['pic'] ?? '',
+        url: doc.data['url'] ?? '',
         adress: Adress(
             num: doc.data['adress']['num'] ?? null,
             voie: doc.data['adress']['voie'] ?? null,

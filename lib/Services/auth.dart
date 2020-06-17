@@ -18,7 +18,7 @@ class AuthService {
   // create user object
   User _userFireBase(FirebaseUser user){
 
-    return (user != null) ? User(id: user.uid, email: user.email, nom: 'nom', prenom: 'prenom', tel: 'tel', adress: null) : null;
+    return (user != null) ? User(id: user.uid, email: user.email, nom: 'nom', prenom: 'prenom', tel: 'tel', adress: null, personalScores: 0, pic: '') : null;
   }
   
   // on auth change
@@ -38,7 +38,7 @@ class AuthService {
       // get user data from firebase
       if(user != null){
         //userCreate = User(id: user.uid, nom: userCreate.nom, prenom: userCreate.prenom, tel: userCreate.tel, adress: null, email: user.email);
-        return User(id: user.uid, nom: '', prenom: '', tel: '', adress: null, email: user.email);
+        return User(id: user.uid, nom: '', prenom: '', tel: '', adress: null, email: user.email, personalScores: 0, pic: '');
       }
 
       //return userCreate;

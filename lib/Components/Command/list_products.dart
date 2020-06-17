@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:bringit/Utils/constants.dart';
 import 'package:bringit/Components/Command/shopping_cart.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 //import 'dart:convert';
 
 class ListProducts extends StatefulWidget {
@@ -40,20 +41,53 @@ class _ListProductsState extends State<ListProducts> {
     command = Command(idDemandeur: '', idRepondeur: '', listeCommande: Map(), totalEnEuro: 0.0, listCommandeSub: Map());
 
   }
-  
+  // launch url
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'l\'url $url semble incorrecte';
+    }
+  }
   // show list or none
   Widget _showListOrNone(){
     return listProduct.length == 0 ?
       Padding(
         padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 3.0),
         child: Card(
-          child: ListTile(
-            onTap: () {},
-            title: Text("Aucun produit est disponible dans ce magasin"),
-            leading: Icon(
-              Icons.sentiment_dissatisfied,
-              color: Constants['primary_color'],
+          child: Column(
+            children: <Widget>[
+              ListTile(
+              onTap: () {},
+              title: Text("Aucun produit est disponible dans ce magasin"),
+              leading: Icon(
+                Icons.sentiment_dissatisfied,
+                color: Constants['primary_color'],
+              ),
             ),
+            SizedBox(height: 10.0),
+            ListTile(
+              onTap: () {},
+              title: Text(
+                "Vous pouvez contacter ${arguments['partner']} directement en cliquant le lien ci-dessous",
+                style: TextStyle(color: Constants['primary_color'])
+              ),
+              leading: Icon(
+                Icons.sentiment_satisfied,
+                color: Constants['primary_color'],
+              ),
+            ),
+            SizedBox(height: 10.0),
+            RaisedButton(
+              onPressed: () {
+                _launchURL(arguments['partnerUrl']);
+              },
+              child: Text(
+                "Se rediriger vers ${arguments['partner']}",
+                style: TextStyle(color: Constants['primary_color'], fontWeight: FontWeight.bold, letterSpacing: 2.0)
+              )
+            )
+            ]
           ),
         ),
       )
@@ -287,7 +321,8 @@ class _ListProductsState extends State<ListProducts> {
           //  _expansionTileBuild('Légumes')
         ]
       ),
-      floatingActionButton: Container(
+      floatingActionButton: (listProduct.length != 0 && command.listeCommande.length != 0) ?
+      Container(
         padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
         height: 90.0,
         width: 165.0,
@@ -309,7 +344,9 @@ class _ListProductsState extends State<ListProducts> {
           backgroundColor: Constants['primary_color'],
           child: Text('Commander', style: TextStyle(color: Colors.white, fontSize: 12.0))
         )
-      ),
+      )
+      : 
+      Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

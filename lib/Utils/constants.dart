@@ -7,7 +7,7 @@ const Map Constants = {
   'choose_your_shop': 'Choisissez votre magasin',
   'finish_command': 'Marquer comme fini',
   'loading': 'Chargement...',
-  'log_out': 'Log out',
+  'log_out': 'Déconnexion',
   'primary_color': Color(0xFF43B61F),
   'search': 'Rechercher',
   'secondary_color': Color(0xFF3B23A5),

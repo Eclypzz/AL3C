@@ -8,8 +8,9 @@ class Partenaire {
   List<String> idProducts;
   String pic;
   Adress adress;
+  String url;
 
-  Partenaire({ this.id, this.name, this.products , this.idProducts, this.adress, this.pic});
+  Partenaire({ this.id, this.name, this.products , this.idProducts, this.adress, this.pic, this.url});
 
   void setProducts(List<Product> products){
     this.products = products;

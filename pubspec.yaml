@@ -43,6 +43,8 @@ dependencies:
   google_maps_flutter: ^0.5.27+3
   geolocator: ^5.3.2+2
   json_serializable: ^3.3.0
+  # url launcher
+  url_launcher: ^5.4.10
 
 dev_dependencies:
   flutter_test:
